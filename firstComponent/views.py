@@ -8,17 +8,17 @@ from rest_framework import status
 from firstComponent.models import FristModel
 
 # importaciones de serializadores
-from firstComponent.serializers import firstComponentSerializer
+from firstComponent.serializers import FirstComponentSerializer
 
 # Create your views here.
 class PrimerTablaList(APIView):
-    def get(request, format=None):
-        querySet=FristModel.objects.all()
-        serializer=firstComponentSerializer(querySet,many=True ,context={'request':request})
+    def get(self, format=None):
+        queryset=FristModel.objects.all()
+        serializer=FirstComponentSerializer(queryset,many=True ,context={'request':self})
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        serializer=firstComponentSerializer(data=request.data, context={'request':request})
+        serializer=FirstComponentSerializer(data=request.data, context={'request':request})
         if serializer.is_valid():
             serializer.save()
             return Response({"success":True, "data":serializer.data, "status":status.HTTP_201_CREATED})
@@ -34,17 +34,17 @@ class FirstView(APIView):
             return 404
     
     def get(self, request, pk, format=None):
-        firstComponent = self.get_FirstComponent(pk)
-        if firstComponent != 404:
-            serializer = firstComponentSerializer(firstComponent, context={'request':request})
+        first_component = self.get_FirstComponent(pk)
+        if first_component != 404:
+            serializer = FirstComponentSerializer(first_component, context={'request':request})
             return Response({"success":True, "data":serializer.data, "status":status.HTTP_200_OK})
         else:
             return Response({"success":False, "data":NULL, "status":status.HTTP_400_BAD_REQUEST})
     
     def put(self, request, pk, format=None):
-        firstComponent = self.get_FirstComponent(pk)
-        if firstComponent != 404:
-            serializer = firstComponentSerializer(firstComponent, data=request.data, context={'request':request})
+        first_component = self.get_FirstComponent(pk)
+        if first_component != 404:
+            serializer = FirstComponentSerializer(first_component, data=request.data, context={'request':request})
             if serializer.is_valid():
                 serializer.save()
                 return Response({"success":True, "data":serializer.data, "status":status.HTTP_200_OK})
@@ -54,10 +54,10 @@ class FirstView(APIView):
              return Response({"success":False, "data":NULL, "status":status.HTTP_400_BAD_REQUEST})
              
     def delete(self, request, pk, format=None):
-        firstComponent = self.get_FirstComponent(pk)
-        if firstComponent != 404:
-            serializer = firstComponentSerializer(id, context={'request':request})
-            firstComponent.delete()
+        first_component = self.get_FirstComponent(pk)
+        if first_component != 404:
+            serializer = FirstComponentSerializer(id, context={'request':request})
+            first_component.delete()
             return Response({"success":True, "data":serializer.data, "status":status.HTTP_200_OK})
         else:
             return Response({"success":False, "data":NULL, "status":status.HTTP_400_BAD_REQUEST})

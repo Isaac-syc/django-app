@@ -38,9 +38,9 @@ class Perfil(APIView):
         user = self.get_user(pk)
         if user!=404:    
             if perfil != 404:
-                stringImage=str(perfil.name_img)                           
+                string_image = str(perfil.name_img)                           
                 try:
-                    os.remove('assets/'+stringImage)
+                    os.remove('assets/'+string_image)
                 except os.error:
                     return Response({"success":False}, status.HTTP_400_BAD_REQUEST)
                 perfil.name_img=request.data['name_img']

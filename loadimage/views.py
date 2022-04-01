@@ -17,20 +17,22 @@ class LoadImageViewList(APIView):
     parser_classes = [MultiPartParser, FormParser]
     
     def get(self, request, format=None):
-        querySet=LoadImageModel.objects.all()
-        serializer = LoadImageSerializerAll(querySet, many=True)
+        queryset=LoadImageModel.objects.all()
+        serializer = LoadImageSerializerAll(queryset, many=True)
         return Response({"success":True, "data":serializer.data, "status":status.HTTP_200_OK})
 
     def post(self, request, *args, **kwargs):
         file = request.data['name_img']
         serializer = LoadImageSerializer(data=request.data, context={'request':request})
         if serializer.is_valid():
-            img = serializer.create(file)
+            serializer.create(file)
             return Response({"success":True}, status=status.HTTP_201_CREATED)
         else:
             return Response({"success":False, "data":NULL},status=status.HTTP_400_BAD_REQUEST)
         
 class LoadImageView(APIView):
+    
+    message_error = 'object not found'
     
     def get_image(self, pk):
         try:
@@ -44,7 +46,7 @@ class LoadImageView(APIView):
             serializer = LoadImageSerializerAll(image, context={'reques':request})
             return Response({"success":True, "data":serializer.data}, status.HTTP_200_OK)
         else:
-            return Response({"Error":'object not found'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Error":message_error},status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, format=None):
         image = self.get_image(pk)
@@ -64,7 +66,7 @@ class LoadImageView(APIView):
             else:
                 return Response({"success":False,"Error":serializer.errors},status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"success":False,"Error":'object not found'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success":False,"Error": message_error},status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         image = self.get_image(pk)
@@ -78,6 +80,6 @@ class LoadImageView(APIView):
                 image.delete()
                 return Response({"success":True},status=status.HTTP_200_OK)
             else:
-                return Response({"Error":'object not found'},status=status.HTTP_400_BAD_REQUEST)
+                return Response({"Error": message_error},status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"Error":'object not found'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Error": message_error},status=status.HTTP_400_BAD_REQUEST)
